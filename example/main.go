@@ -30,7 +30,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	wordSearch := &AutoCompleter{
+	wordSearch := AutoCompleter{
 		webjacker.NewHttpResource("words"),
 	}
 
