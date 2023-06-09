@@ -41,7 +41,10 @@ func main() {
 
 	wordSearch.On(http.MethodGet, func(rw http.ResponseWriter, r *http.Request, params url.Values) {
 		prefix := params.Get(wordSearch.Id)
-		results := searchWords(prefix)
+		var results []string
+		if prefix != "" {
+			results = searchWords(prefix)
+		}
 		templates.ExecuteTemplate(rw, "autoc_data", results)
 	})
 

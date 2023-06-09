@@ -17,7 +17,6 @@ var autocViews string = `
 			hx-trigger="keyup delay:500ms"
 			hx-target="#{{.Id}}_data">
 		<datalist id="{{.Id}}_data">
-			{{- template "autoc_data" -}}
 		</datalist>
 	{{- end}}`
 
