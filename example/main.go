@@ -25,18 +25,13 @@ func main() {
 	}
 
 	templates := template.New("Main")
-	if _, err := templates.ParseFiles("./index.html"); err != nil {
+	if _, err := templates.ParseGlob("./*.html"); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
 	wordSearch := AutoCompleter{
 		webjacker.NewHttpResource("words"),
-	}
-
-	if _, err := templates.Parse(autocViews); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
 	}
 
 	wordSearch.On(http.MethodGet, func(rw http.ResponseWriter, r *http.Request, params url.Values) {
