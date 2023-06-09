@@ -41,10 +41,7 @@ func main() {
 
 	wordSearch.On(http.MethodGet, func(rw http.ResponseWriter, r *http.Request, params url.Values) {
 		prefix := params.Get(wordSearch.Id)
-		var results []string
-		if prefix != "" {
-			results = searchWords(prefix)
-		}
+		results := searchWords(prefix)
 		templates.ExecuteTemplate(rw, "autoc_data", results)
 	})
 
@@ -61,11 +58,13 @@ func main() {
 
 func searchWords(prefix string) []string {
 	var results []string
-	pfx := strings.ToLower(prefix)
-	for _, w := range words {
-		word := strings.ToLower(w)
-		if strings.HasPrefix(word, pfx) {
-			results = append(results, w)
+	if prefix != "" {
+		pfx := strings.ToLower(prefix)
+		for _, w := range words {
+			word := strings.ToLower(w)
+			if strings.HasPrefix(word, pfx) {
+				results = append(results, w)
+			}
 		}
 	}
 	return results
