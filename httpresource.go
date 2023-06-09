@@ -75,7 +75,7 @@ func RegisterHttpResource(resource HttpResource, mux *http.ServeMux) {
 }
 
 func UnregisterHttpResource(resource HttpResource, mux *http.ServeMux) {
-	mux.Handle(resource.Path(), &resource)
+	mux.Handle(resource.Path(), http.NotFoundHandler())
 }
 
 func GetParams(r *http.Request) url.Values {
