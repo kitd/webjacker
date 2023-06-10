@@ -2,18 +2,23 @@ package main
 
 import (
 	"bytes"
+	"embed"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 
 	"github.com/kitd/webjacker"
 )
 
-var words []string
+var (
+	//go:embed templates
+	templateFiles embed.FS
+	words         []string
+	templates     *template.Template
+)
 
 func main() {
 
@@ -24,8 +29,8 @@ func main() {
 		words[i] = strings.TrimSpace(string(b))
 	}
 
-	templates := template.New("Main")
-	if _, err := templates.ParseGlob("./*.html"); err != nil {
+	templates = template.New("Main")
+	if _, err := templates.ParseFS(templateFiles, "templates/*.gohtml"); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -34,13 +39,9 @@ func main() {
 		webjacker.NewHttpResource("words"),
 	}
 
-	wordSearch.On(http.MethodGet, func(rw http.ResponseWriter, r *http.Request, params url.Values) {
-		prefix := params.Get(wordSearch.Id)
-		results := searchWords(prefix)
-		templates.ExecuteTemplate(rw, "autoc_data", results)
-	})
+	wordSearch.On(http.MethodGet, wordSearch.Handle)
 
-	webjacker.RegisterHttpResource(*wordSearch.HttpResource, http.DefaultServeMux)
+	webjacker.RegisterHttpResource(wordSearch.HttpResource, http.DefaultServeMux)
 
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		if err := templates.ExecuteTemplate(rw, "index", wordSearch); err != nil {

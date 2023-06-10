@@ -7,7 +7,7 @@
 {{define "autoc" -}}
 <input name="{{.Id}}" id="{{.Id}}" type="text" list="{{.Id}}_data"
     hx-get="{{.Path}}" 
-    hx-trigger="keyup delay:500ms"
+    hx-trigger="keyup delay:250ms"
     hx-target="#{{.Id}}_data">
 <datalist id="{{.Id}}_data">
 </datalist>

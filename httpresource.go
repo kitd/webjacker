@@ -70,11 +70,11 @@ func (h *HttpResource) EventPath(event string) string {
 	return fmt.Sprintf(SelfPathForEvent, h.Id, event)
 }
 
-func RegisterHttpResource(resource HttpResource, mux *http.ServeMux) {
-	mux.Handle(resource.Path(), &resource)
+func RegisterHttpResource(resource *HttpResource, mux *http.ServeMux) {
+	mux.Handle(resource.Path(), resource)
 }
 
-func UnregisterHttpResource(resource HttpResource, mux *http.ServeMux) {
+func UnregisterHttpResource(resource *HttpResource, mux *http.ServeMux) {
 	mux.Handle(resource.Path(), http.NotFoundHandler())
 }
 
