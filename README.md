@@ -15,23 +15,30 @@ type AutoCompleter struct {
 	*webjacker.HttpResource
 }
 
-func (ac *AutoCompleter) Handle(rw http.ResponseWriter, r *http.Request, params url.Values) {
-	prefix := params.Get("name")
-	results := searchCustomers(prefix)
-	templates.ExecuteTemplate(rw, "name_results", results)
-}
-
 // An example autocompleter instance for looking up names
 nameSearch := AutoCompleter{
     // Resource served on '/name_search' in the ServeMux
     webjacker.NewHttpResource("name_search"), 
 }
 
-nameSearch.On(http.MethodGet, nameSearch.Handle)
+nameSearch.On(http.MethodGet, 
+    func (rw http.ResponseWriter, r *http.Request, params url.Values) {
+        prefix := params.Get(nameSearch.Id)
+        results := searchCustomers(prefix)
+        templates.ExecuteTemplate(rw, "name_results", results)
+    })
 
 webjacker.RegisterHttpResource(nameSearch.HttpResource, http.DefaultServeMux)
 ```
 
 See [examples](./example/) for a fuller example. 
 
-The path that a resource appears on is available via the `Path()` method. You can use this to inject calls back to the resource in any output rendedred to the ResponseWriter. If you can't or don't want to be constrained to the standard HTTP verbs, the path to trigger custom events is available via `PathForEvent(my_event)`. You then define the handler for it via `.On("my_event" handler)` similar to the example above.
+The path that a resource appears on is available via the `Path()` method. You can use this to inject links back to this resource in any output rendered to the ResponseWriter. If you can't or don't want to be use the standard HTTP verbs, the path to trigger custom events is available via `EventPath("event_name")`. You then define the handler for it via `.On("event_name" handler)` similar to the example above.
+
+You will no doubt be asking "Why not just implement `http.Handler` and create a `ServeHTTP()` function on your objects?", which is a reasonable question. There are a few reasons:
+
+1. Just having the function is not enough. There's the business of hooking it up under a certain path to a `ServeMux`, extracting parameters, dealing with custom events, responding to different HTTP methods, etc. `Webjacker` makes dealing with all this much simpler.
+
+2. The `ServeHTTP()` function will handle calls for all instances of that struct. This is OK for data objects, but not ideal for service objects, which require different handling for different instances. Eg (using the above example), an autocompleter for customer names and one for product names would require different processing, a distinction that would have to be made in the single `ServeHTTP()` function. Again, `Webjacker` makes handling this much simpler by allowing you to hook up processing on a per instance or per type basis.
+
+3. It provides separation of concerns. Let your domain objects and services deal with domain problems. Let `Webjacker` handle the HTTP problems for you.
