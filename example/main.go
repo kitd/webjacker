@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -39,7 +40,12 @@ func main() {
 		webjacker.NewHttpResource("words"),
 	}
 
-	wordSearch.On(http.MethodGet, wordSearch.Handle)
+	wordSearch.On(http.MethodGet,
+		func(rw http.ResponseWriter, r *http.Request, params url.Values) {
+			prefix := params.Get(wordSearch.Id)
+			results := searchWords(prefix)
+			templates.ExecuteTemplate(rw, "autoc_data", results)
+		})
 
 	webjacker.RegisterHttpResource(wordSearch.HttpResource, http.DefaultServeMux)
 
