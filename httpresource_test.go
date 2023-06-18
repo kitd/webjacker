@@ -29,7 +29,7 @@ func TestPlainGet(t *testing.T) {
 	})
 
 	mux := http.NewServeMux()
-	webjacker.RegisterHttpResource(test.HttpResource, mux)
+	webjacker.RegisterHttpResourceOnPath(test.HttpResource, mux, "")
 	ts := httptest.NewServer(mux)
 	defer ts.Close()
 
@@ -55,7 +55,7 @@ func TestGetWithParams(t *testing.T) {
 	})
 
 	mux := http.NewServeMux()
-	webjacker.RegisterHttpResource(test.HttpResource, mux)
+	webjacker.RegisterHttpResourceOnPath(test.HttpResource, mux, "")
 	ts := httptest.NewServer(mux)
 	defer ts.Close()
 
@@ -81,7 +81,7 @@ func TestPostWithParams(t *testing.T) {
 	})
 
 	mux := http.NewServeMux()
-	webjacker.RegisterHttpResource(test.HttpResource, mux)
+	webjacker.RegisterHttpResourceOnPath(test.HttpResource, mux, "")
 	ts := httptest.NewServer(mux)
 	defer ts.Close()
 
@@ -105,7 +105,7 @@ func TestCustomEvent(t *testing.T) {
 	})
 
 	mux := http.NewServeMux()
-	webjacker.RegisterHttpResource(test.HttpResource, mux)
+	webjacker.RegisterHttpResourceOnPath(test.HttpResource, mux, "")
 	ts := httptest.NewServer(mux)
 	defer ts.Close()
 
@@ -128,7 +128,7 @@ func TestNotImplemented(t *testing.T) {
 	})
 
 	mux := http.NewServeMux()
-	webjacker.RegisterHttpResource(test.HttpResource, mux)
+	webjacker.RegisterHttpResourceOnPath(test.HttpResource, mux, "")
 	ts := httptest.NewServer(mux)
 	defer ts.Close()
 

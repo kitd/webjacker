@@ -9,8 +9,8 @@ import (
 
 const (
 	EventParam        string = "_evt"
-	SelfPath          string = "/%s"
-	SelfPathForEvent  string = "/%s?" + EventParam + "=%s"
+	SelfPath          string = "%s/%s"
+	SelfPathForEvent  string = "%s/%s?" + EventParam + "=%s"
 	UnsupportedEvent  string = "Unsupported event: %s"
 	UnsupportedMethod string = "Unsupported method: %s"
 )
@@ -19,6 +19,7 @@ type ResourceHandler func(w http.ResponseWriter, r *http.Request, params url.Val
 
 type HttpResource struct {
 	Id       string
+	pathBase string
 	handlers map[string]ResourceHandler
 }
 
@@ -63,14 +64,23 @@ func (h *HttpResource) runHandler(event string, params url.Values, w http.Respon
 }
 
 func (h *HttpResource) Path() string {
-	return fmt.Sprintf(SelfPath, h.Id)
+	return fmt.Sprintf(SelfPath, h.pathBase, h.Id)
 }
 
 func (h *HttpResource) EventPath(event string) string {
-	return fmt.Sprintf(SelfPathForEvent, h.Id, event)
+	return fmt.Sprintf(SelfPathForEvent, h.pathBase, h.Id, event)
 }
 
-func RegisterHttpResource(resource *HttpResource, mux *http.ServeMux) {
+func RegisterHttpResource(resource *HttpResource) {
+	RegisterHttpResourceOnPath(resource, http.DefaultServeMux, "")
+}
+
+func RegisterHttpResourceOnPath(resource *HttpResource, mux *http.ServeMux, pathBase string) {
+	resource.pathBase = pathBase
+	if pathBase != "" && !strings.HasPrefix(pathBase, "/") {
+		resource.pathBase += "/"
+	}
+
 	mux.Handle(resource.Path(), resource)
 }
 
