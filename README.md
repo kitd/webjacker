@@ -31,7 +31,7 @@ nameSearch.On(http.MethodGet,
 webjacker.RegisterHttpResource(nameSearch.HttpResource, http.DefaultServeMux)
 ```
 
-See [examples](./example/) for a fuller example using Htmx. 
+See [examples](./examples/autocompleter) for a fuller example using Htmx. 
 
 The path that a resource appears on is available via the `Path()` method. You can use this to inject links back to this resource in any output rendered to the ResponseWriter. If you can't or don't want to be use the standard HTTP verbs, the path to trigger custom events is available via `EventPath("event_name")`. You then define the handler for it via `.On("event_name", handler)` similar to the example above.
 

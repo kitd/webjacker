@@ -1,0 +1,3 @@
+# Simple autocompleter
+
+This example shows a simple autocompleter populating the autocompletion options using words from the `words.txt` file that begin with the contents of the input box. On `keyup`, after a 250ms delay, the autocompleter HttpResource is sent a GET request. Using the contents of the input, it looks up the matching words, then formats the results as a list of `<option>`s which are sent back to the page. Htmx then populates the `<datalist>` with those results.

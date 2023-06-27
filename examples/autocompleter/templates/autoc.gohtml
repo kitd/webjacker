@@ -1,14 +1,22 @@
+<!-- Template for an autocompleting input box.
+     '.' refers to the HttpResource backing the template.
+     On keyup, pause 250ms, then send a GET to the HttpResource,
+     and send the results to the `<datalist>`. 
+     Note that since the HttpResource.Id is used as the element id,
+     on GET, the contents of the input box will be available to the handler
+     as the HTTP parameter named after that id. -->
+{{define "autoc" -}}
+<input name="{{.Id}}" id="{{.Id}}" type="text" list="{{.Id}}_data"
+    hx-trigger="keyup delay:250ms"
+    hx-get="{{.Path}}" 
+    hx-target="#{{.Id}}_data"><datalist id="{{.Id}}_data"></datalist>
+{{- end}}
+
+<!-- Template for the contents of the `<datalist>`. 
+    '.' will be an array of strings -->
 {{define "autoc_data" -}}
 {{- range . -}}
     <option>{{.}}</option>
 {{- end -}}
 {{- end}}
 
-{{define "autoc" -}}
-<input name="{{.Id}}" id="{{.Id}}" type="text" list="{{.Id}}_data"
-    hx-get="{{.Path}}" 
-    hx-trigger="keyup delay:250ms"
-    hx-target="#{{.Id}}_data">
-<datalist id="{{.Id}}_data">
-</datalist>
-{{- end}}
